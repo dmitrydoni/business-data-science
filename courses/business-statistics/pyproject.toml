@@ -1,0 +1,20 @@
+[project]
+name = "business-statistics"
+version = "0.1.0"
+description = "Business Statistics: E-news Express A/B testing project"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+  "numpy",
+  "pandas",
+  "scipy",
+  "matplotlib",
+  "seaborn",
+  "scikit-learn",
+  "marimo",
+]
+
+[dependency-groups]
+dev = [
+  "ruff",
+]
