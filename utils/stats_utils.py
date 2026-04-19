@@ -38,7 +38,7 @@ def compare_groups_boxplot(
     sns.boxplot(
         x=x, y=y, data=data, hue=x,
         showmeans=True, palette=palette,
-        order=order, hue_order=order, legend=False,
+        order=order, hue_order=order, dodge=False, legend=False,
     )
     plt.title(title or f"{y} by {x}")
     plt.xlabel(xlabel or x)

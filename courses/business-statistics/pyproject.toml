@@ -12,6 +12,7 @@ dependencies = [
   "seaborn",
   "scikit-learn",
   "marimo",
+  "statsmodels>=0.14.6",
 ]
 
 [dependency-groups]
