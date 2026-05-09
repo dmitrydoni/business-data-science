@@ -74,3 +74,54 @@ def plot_confusion_matrix(model, predictors, target):
     plt.title("Confusion Matrix")
 
     plt.show()
+
+
+def classification_report_predict_proba(model, predictors, target, threshold=0.5):
+    """sklearn classifier with predict_proba: classify at custom threshold and report metrics.
+
+    For threshold tuning when the default 0.5 isn't optimal (cost-asymmetric problems).
+    """
+    proba = model.predict_proba(predictors)[:, 1]
+    pred = (proba > threshold).astype(int)
+    return pd.DataFrame(
+        {
+            "Accuracy": accuracy_score(target, pred),
+            "Recall": recall_score(target, pred),
+            "Precision": precision_score(target, pred),
+            "F1": f1_score(target, pred),
+        },
+        index=[0],
+    )
+
+
+def plot_confusion_matrix_proba(model, predictors, target, threshold=0.5):
+    """Confusion matrix at a custom probability threshold for sklearn classifiers."""
+    proba = model.predict_proba(predictors)[:, 1]
+    y_pred = (proba > threshold).astype(int)
+    cm = confusion_matrix(target, y_pred)
+    labels = np.asarray(
+        [f"{item}\n{item / cm.sum():.2%}" for item in cm.flatten()]
+    ).reshape(cm.shape)
+
+    plt.figure(figsize=(6, 4))
+    sns.heatmap(cm, annot=labels, fmt="", cmap="Blues")
+    plt.ylabel("True Label")
+    plt.xlabel("Predicted Label")
+    plt.title(f"Confusion Matrix (threshold={threshold})")
+    plt.show()
+
+
+def compare_models_table(models, X_train, y_train, X_test, y_test):
+    """Build a side-by-side train/test comparison table for a dict of fitted classifiers.
+
+    Returns a DataFrame indexed by metric (Accuracy/Recall/Precision/F1),
+    columns = model names. Train and test reported as separate sub-tables.
+    """
+    train_rows = {}
+    test_rows = {}
+    for name, model in models.items():
+        train_rows[name] = classification_report_df(model, X_train, y_train).iloc[0]
+        test_rows[name] = classification_report_df(model, X_test, y_test).iloc[0]
+    train_df = pd.DataFrame(train_rows)
+    test_df = pd.DataFrame(test_rows)
+    return train_df, test_df
